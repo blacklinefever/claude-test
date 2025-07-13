@@ -6,15 +6,30 @@ def log_calculation_to_csv(numbers, total):
     csv_file = "calculations.csv"
     file_exists = os.path.exists(csv_file)
     
+    # Determine the maximum number of columns needed
+    max_numbers = 10  # Allow up to 10 numbers by default
+    if file_exists:
+        # Check existing file to see if we need more columns
+        with open(csv_file, mode='r') as file:
+            reader = csv.reader(file)
+            headers = next(reader, [])
+            if headers:
+                # Count existing number columns (exclude Timestamp and Sum)
+                number_cols = len([h for h in headers if h.startswith('Number')])
+                max_numbers = max(max_numbers, number_cols, len(numbers))
+    else:
+        max_numbers = max(max_numbers, len(numbers))
+    
     with open(csv_file, mode='a', newline='') as file:
         writer = csv.writer(file)
         
         if not file_exists:
-            writer.writerow(['Timestamp', 'Numbers', 'Sum'])
+            headers = ['Timestamp'] + [f'Number{i+1}' for i in range(max_numbers)] + ['Sum']
+            writer.writerow(headers)
         
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        numbers_str = ', '.join(map(str, numbers))
-        writer.writerow([timestamp, numbers_str, total])
+        row = [timestamp] + list(numbers) + [''] * (max_numbers - len(numbers)) + [total]
+        writer.writerow(row)
 
 def main():
     print("Welcome to the Number Addition Calculator!")
