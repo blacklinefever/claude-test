@@ -1,3 +1,21 @@
+import csv
+import os
+from datetime import datetime
+
+def log_calculation_to_csv(numbers, total):
+    csv_file = "calculations.csv"
+    file_exists = os.path.exists(csv_file)
+    
+    with open(csv_file, mode='a', newline='') as file:
+        writer = csv.writer(file)
+        
+        if not file_exists:
+            writer.writerow(['Timestamp', 'Numbers', 'Sum'])
+        
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        numbers_str = ', '.join(map(str, numbers))
+        writer.writerow([timestamp, numbers_str, total])
+
 def main():
     print("Welcome to the Number Addition Calculator!")
     print("This program will add together all the numbers you enter.")
@@ -26,6 +44,9 @@ def main():
         print(f"\nCalculation complete!")
         print(f"Numbers entered: {numbers}")
         print(f"Sum: {total}")
+        
+        log_calculation_to_csv(numbers, total)
+        print("Calculation saved to calculations.csv")
     else:
         print("No numbers were entered.")
 
