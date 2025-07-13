@@ -15,12 +15,24 @@ conda create -n claude-test python=3.11
 conda activate claude-test
 ```
 
+### Package Installation Priority
+1. **conda-forge** (preferred): `conda install -c conda-forge <package-name>`
+2. **conda defaults** (fallback): `conda install <package-name>`
+3. **pip** (final fallback): `pip install <package-name>`
+
+### System Utilities
+Use Homebrew for system-level tools and utilities:
+- **Applications**: `brew install --cask <app-name>` (preferred for GUI apps)
+- **CLI tools**: `brew install <utility-name>`
+
 ### Running the Script
 ```bash
 python add_numbers.py
 ```
 
 The script runs interactively, prompting users to enter numbers until they press Enter without input.
+
+**First Run**: MotherDuck will open browser for SSO authentication. Subsequent runs use stored token.
 
 ## Code Structure
 
@@ -33,8 +45,13 @@ The script runs interactively, prompting users to enter numbers until they press
 
 - **Python Version**: Requires Python 3.x (managed via Anaconda)
 - **Environment**: Uses conda for Python environment management
-- **Dependencies**: None (uses only standard library)
+- **Package Priority**: conda-forge → conda defaults → pip
+- **Dependencies**: DuckDB (from conda-forge) and Python standard library
 - **Architecture**: Single-file script with main() function entry point
+- **Data Storage**: 
+  - CSV files (local)
+  - MotherDuck cloud database (primary, with local fallback)
+- **Cloud Integration**: Automatic SSO authentication with MotherDuck
 - **Error Handling**: Validates numeric input with try/except for ValueError
 
 ## Development Notes
